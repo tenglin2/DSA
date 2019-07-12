@@ -1,187 +1,227 @@
 /**
- * Binary Search Trees are a very common and useful data structures that organizes data such that each node has a possible left and right child. Every BST is composed of a root and the relationship between parent and child nodes is leftChild.value < parent.value < rightChild.value. It is recursive by nature and is O(logn) for insertions, deletions, etc.
- * 
- * I am letting duplicates and putting them on the left side of the binary search tree. Another solution to duplicates would be to attach a frequency property onto the node instance.
- * 
- * 
- * Need to add methods for remove, min, max, and present/exists. Removal seems difficult since you have to handle multiple cases for order messing up.
+ * Binary Search Trees are a very common and useful data structures that organizes data such that each node has a possible left and right child. 
+ * Every BST is composed of a root and the relationship between parent and child nodes is leftChild.value < parent.value < rightChild.value. 
+ * It is recursive by nature and is O(logn) for insertions, deletions, etc.
+ * The logic behind the remove method makes sense, but the code is difficult to understand.
  */
 const Node = class {
-  constructor(value) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
+	constructor(value) {
+		this.value = value;
+		this.left = null;
+		this.right = null;
+	}
+};
 
 const BinarySearchTree = class {
-  constructor() {
-    this.root = null;
-  }
+	constructor() {
+		this.root = null;
+	}
 
-  // What am I returning after adding? True? The Node? Guessing empty return since the information was already available and implicit. Outputting the BST structure would not be helpful.
-  add(value) {
-    let newNode = new Node(value);
+	add(value) {
+		// Creating a node instance to add to the tree.
+		let newNode = new Node(value);
 
-    if (!this.root) {
-      this.root = newNode;
-      return;
-    }
+		// If the tree is empty we assign the root to the new node.
+		if (!this.root) {
+			this.root = newNode;
+			return this;
+		}
 
-    // We traverse through the tree until we find an endpoint.
-    let currentNode = this.root;
-    while (true) {
-      if (newNode.value <= currentNode.value) {
-        if (!currentNode.left) {
-          currentNode.left = newNode;
-          return;
-        }
-        currentNode = currentNode.left;
-      } else if (newNode.value > currentNode.value) {
-        if (!currentNode.right) {
-          currentNode.right = newNode;
-          return;
-        }
-        currentNode = currentNode.right;
-      }
-    }
+		// We traverse through the tree until we find an endpoint.
+		let currentNode = this.root;
 
-    // An alternative that uses a recursive traversal function until add.
-    const traverseTree = function(currentNode) {
-      if (node.value <= currentNode.value) {
-        if (!currentNode.left) {
-          currentNode.left = node;
-          return;
-        }
-        traverseTree(currentNode.left);
-      } else if (node.value > currentNode.value) {
-        if (!currentNode.right) {
-          currentNode.right = node;
-          return;
-        }
-        traverseTree(currentNode.right);
-      } else return null;
-    }
-    traverseTree(this.root);
-  }
+		// Since we know there must be a position in the position, we use a while loop that ends when we find a spot and break. Note that we handle duplicates by adding to the left subtree. This can be handled in other ways.
+		while (true) {
+			if (newNode.value <= currentNode.value) {
+				if (!currentNode.left) {
+					currentNode.left = newNode;
+					return;
+				}
+				currentNode = currentNode.left;
+			} else if (newNode.value > currentNode.value) {
+				if (!currentNode.right) {
+					currentNode.right = newNode;
+					return;
+				}
+				currentNode = currentNode.right;
+			} else return null; // Should never happen, stylistic choice.
+		}
 
-  // I do not understand the deletion step. I understand that you have a helper function that does the removal, but I'm not sure what the exact step is done to remove the value. I guess it is the assignment step at the bottom, but why specifically the root?
-  // I guess the first part is just finding the value until you get to the else clause. It works recursively so the left and right children are changed from the assignment. Need to look at other resources for clarity.
-  remove(value) {
-    const removeNode = function(node, value) {
-      // Empty tree, return false.
-      if (node === null) return false;
+		// An alternative that uses a recursive traversal function until add.
+		const traverseTree = function(currentNode) {
+			if (node.value <= currentNode.value) {
+				if (!currentNode.left) {
+					currentNode.left = node;
+					return;
+				}
+				traverseTree(currentNode.left);
+			} else if (node.value > currentNode.value) {
+				if (!currentNode.right) {
+					currentNode.right = node;
+					return;
+				}
+				traverseTree(currentNode.right);
+			} else return null;
+		};
+		traverseTree(this.root);
+	}
 
-      //
-      if (value < node.value) {
-        node.left = removeNode(node.left, value);
-        return node;
-      } else if (value > node.value) {
-        node.right = removeNode(node.right, value);
-        return node;
-      } else {
-        if (node.left === null && node.right === null) return null;
-        if (node.left === null) return node.right;
-        if (node.right === null) return node.left;
+	// Note that they give us a value that we have to check if it exists in the tree. If so then we go ahead and remove it.
+	remove(value) {
+		// Describing the helper function that removes the node from the tree.
+		const removeNode = function(node, value) {
+			// Empty tree, return false.
+			if (node === null) return false;
 
-        let tempNode = node.right;
-        while(tempNode.left !== null) {
-          tempNode = tempNode.left;
-        }
+			// If the value is less than the current node, make a recursive step with the left node.
+			if (value < node.value) {
+				node.left = removeNode(node.left, value);
+				return node;
+			} else if (value > node.value) {
+				// The other case where value is greater than current node.
+				node.right = removeNode(node.right, value);
+				return node;
+			} else {
+				// This case means the current node value is equal to the given value.
 
-        node.value = tempNode.value;
-        node.right = removeNode(node.right, tempNode.data);
-        return node;
-      }
-    }
+				// The current node is a leaf node, so we assign that node to null, effectively deleting it.
+				if (node.left === null && node.right === null) return null;
 
-    this.root = removeNode(this.root, value);
-  }
+				// Only one child, connect the parent and child of the current node.
+				if (node.left === null) return node.right;
+				if (node.right === null) return node.left;
 
-  findMin() {
-    let currentNode = this.root;
-    while (currentNode.left !== null) currentNode = currentNode.left;
-    return currentNode.value;
-  }
+				// Has two children so we need to find the minimum value in the right subtree (or the maximum value in the left subtree) then replace with the current node. The ensure that the order is still valid.
+				let tempNode = node.right;
+				while (tempNode.left !== null) {
+					tempNode = tempNode.left;
+				}
 
-  findMax() {
-    let currentNode = this.root;
-    while (currentNode.right !== null) currentNode = currentNode.right;
-    return currentNode.value;
-  }
+				// Switching the values.
+				node.value = tempNode.value;
 
-  isPresent(value) {
-    let currentNode = this.root;
+				// Recursive step that removes the temp node given the right subtree.
+				node.right = removeNode(node.right, tempNode.data);
 
-    while (currentNode) {
-      if (currentNode.value < value) currentNode = currentNode.left;
-      else if (currentNode.value > value) currentNode = currentNode.right;
-      else return true;
-    }
+				// Returns the new node assignment which updates the tree.
+				return node;
+			}
+		};
 
-    return false;
-  }
+		this.root = removeNode(this.root, value);
+	}
 
-  // Logic behind this is to populate a queue and add the left and right children of each element into queue as the parent element is shifted into the data array.
-  breadthFirstSearch() {
-    let currentNode = this.root;
-    let queue = [];
-    let data = [];
+	findMin() {
+		let currentNode = this.root;
+		while (currentNode.left !== null) currentNode = currentNode.left;
+		return currentNode.value;
+	}
 
-    queue.push(currentNode); // What if I push a root node that doesn't exist? Will array length stay 0?
-    while (queue.length) {
-      currentNode = queue.shift();
-      data.push(currentNode.value);
+	findMax() {
+		let currentNode = this.root;
+		while (currentNode.right !== null) currentNode = currentNode.right;
+		return currentNode.value;
+	}
 
-      // Same logic as if statement with null else statement.
-      node.left && queue.push(node.left);
-      node.right && queue.push(node.right);
-    }
+	isPresent(value) {
+		let currentNode = this.root;
 
-    return data;
-  }
+		while (currentNode) {
+			if (currentNode.value < value) currentNode = currentNode.left;
+			else if (currentNode.value > value) currentNode = currentNode.right;
+			else return true;
+		}
 
-  // Middle, Left, Right
-  depthFirstSearchPreOrder() {
-    let data = [];
+		return false;
+	}
 
-    let traverseTree = function(currentNode) {
-      data.push(currentNode.value);
-      // Same as if statement with null else statement.
-      node.left && traverseTree(node.left);
-      node.right && traverseTree(node.right);
-    };
-    traverseTree(this.root);
+	// Logic behind this is to populate a queue and add the left and right children of each element into queue as the parent element is shifted into the data array.
+	breadthFirstSearch() {
+		let currentNode = this.root;
+		let queue = [];
+		let data = [];
 
-    return data;
-  }
+		queue.push(currentNode); // What if I push a root node that doesn't exist? Will array length stay 0?
+		while (queue.length) {
+			currentNode = queue.shift();
+			data.push(currentNode.value);
 
-  // Left, Middle, Right
-  depthFirstSearchInOrder() {
-    let data = [];
+			// Same logic as if statement with null else statement.
+			currentNode.left && queue.push(currentNode.left);
+			currentNode.right && queue.push(currentNode.right);
+		}
 
-    let traverseTree = function(currentNode) {
-      node.left && traverseTree(node.left);
-      data.push(currentNode.value);
-      node.right && traverseTree(node.right);
-    };
-    traverseTree(this.root);
+		console.log(data);
 
-    return data;
-  }
+		return this;
+	}
 
-  // Left, Right, Middle
-  depthFirstSearchPostOrder() {
-    let data = [];
+	// Middle, Left, Right
+	depthFirstSearchPreOrder() {
+		let data = [];
 
-    let traverseTree = function(currentNode) {
-      node.left && traverseTree(node.left);
-      node.right && traverseTree(node.right);
-      data.push(currentNode.value);
-    };
-    traverseTree(this.root);
+		let traverseTree = function(currentNode) {
+			data.push(currentNode.value);
+			// Same as if statement with null else statement.
+			currentNode.left && traverseTree(currentNode.left);
+			currentNode.right && traverseTree(currentNode.right);
+		};
+		traverseTree(this.root);
 
-    return data;
-  }
+		console.log(data);
 
+		return this;
+	}
+
+	// Left, Middle, Right
+	depthFirstSearchInOrder() {
+		let data = [];
+
+		let traverseTree = function(currentNode) {
+			currentNode.left && traverseTree(currentNode.left);
+			data.push(currentNode.value);
+			currentNode.right && traverseTree(currentNode.right);
+		};
+		traverseTree(this.root);
+
+		console.log(data);
+
+		return this;
+	}
+
+	// Left, Right, Middle
+	depthFirstSearchPostOrder() {
+		let data = [];
+
+		let traverseTree = function(currentNode) {
+			currentNode.left && traverseTree(currentNode.left);
+			currentNode.right && traverseTree(currentNode.right);
+			data.push(currentNode.value);
+		};
+		traverseTree(this.root);
+
+		console.log(data);
+
+		return this;
+	}
 };
+
+//     5
+//   2   9
+//  1  3  6  7
+
+let bst = new BinarySearchTree();
+bst.add(5);
+bst.add(2);
+bst.add(9);
+bst.add(6);
+bst.add(3);
+bst.add(7);
+bst.add(1);
+bst.breadthFirstSearch();
+bst.depthFirstSearchPreOrder();
+bst.depthFirstSearchInOrder();
+bst.depthFirstSearchPostOrder();
+
+bst.remove(7);
+bst.breadthFirstSearch();
