@@ -223,6 +223,43 @@ const BinarySearchTree = class {
 	// 	if (node === null) return 0;
 	// 	return 1 + Math.max(findHeight(node.left), findHeight(node.right));
 	// }
+
+	// At what point do we initialize the value for left, right? Never right?
+	findMinHeight(node = this.root) {
+		// If the tree is empty, return a height of -1.
+		if (node === null) return -1;
+
+		// Recursively call the left and right subtrees.
+		let left = this.findMinHeight(node.left);
+		let right = this.findMinHeight(node.right);
+
+		// The return value is the smallest height so we want the first termination between left and right.
+		if (left < right) {
+			return left + 1;
+		} else {
+			return right + 1;
+		}
+	}
+
+	findMaxHeight(node = this.root) {
+		// If the tree is empty return height of -1.
+		if (node === null) return -1;
+
+		let left = this.findMaxHeight(node.left);
+		let right = this.findMaxHeight(node.right);
+
+		// This time we want the largest height...
+		if (left > right) {
+			return left + 1;
+		} else {
+			return right + 1;
+		}
+	}
+
+	// The tree is still balanced as long as the height difference is 1 or less.
+	isBalanced() {
+		return this.findMinHeight() >= this.findMaxHeight() - 1;
+	}
 };
 
 //     5
