@@ -69,7 +69,95 @@ const Graph = class {
 	}
 
 	// Recursive depth first search of the graph.
-	depthFirstSearchRecursive() {}
+	depthFirstSearchRecursive(start) {
+		// Result holds the correct order.
+		let result = [];
+		// Visited will store all the vertices that we traverse so that we don't visit again.
+		let visited = {};
+		// To avoid an undefined error because the dfs function does not have a reference to this.
+		let adjacencyList = this.adjacencyList;
+
+		// Helper methods that actual does the traversal through the graph.
+		const dfs = function(vertex) {
+			// Checking if the vertex is valid.
+			if (!vertex) return null;
+			// When we visit, we save it to the visited object so that we don't traverse twice.
+			visited[vertex] = true;
+			// Pushing the actual data to the return array.
+			result.push(vertex);
+
+			// Loop through the adjacency list to recursively search if not visited. Wary about this because forEach cannot be interrupted by a return. The iteration will complete regardless of any returns. In this case, I don't think it matters but still bad to use return inside of a forEach loop.
+			adjacencyList[vertex].forEach((neighbor) => {
+				if (!visited[neighbor]) {
+					return dfs(neighbor);
+				}
+			});
+		};
+		dfs(start);
+
+		// Outputing the result.
+		console.log(result);
+
+		// Returning the result in case you need for data manipulation.
+		return result;
+	}
+
+	// Traverse iteratively.
+	depthFirstSearchIterative(start) {
+		// Looks like priority queue with heap.
+		let stack = [ start ];
+		let result = [];
+		let visited = {};
+		let currentVertex;
+
+		visited[start] = true;
+
+		// Look incredibly familiar to the graph stuff from class.
+		while (stack.length) {
+			// Note that the order is different because we pop instead of shift.
+			currentVertex = stack.pop();
+			result.push(currentVertex);
+
+			// Traverse through each edge and visit if not already visited.
+			this.adjacencyList[currentVertex].forEach((neighbor) => {
+				if (!visited[neighbor]) {
+					visited[neighbor] = true;
+					stack.push(neighbor);
+				}
+			});
+		}
+
+		console.log(result);
+
+		return result;
+	}
+
+	// Breadth first search should be eerily similar to the BST breadth first search.
+	breadthFirstSearch(start) {
+		let queue = [ start ];
+		let result = [];
+		let visited = {};
+		visited[start] = true;
+		let currentVertex;
+
+		while (queue.length) {
+			currentVertex = queue.shift();
+			result.push(currentVertex);
+
+			this.adjacencyList[currentVertex].forEach((neighbor) => {
+				if (!visited[neighbor]) {
+					visited[neighbor] = true;
+					queue.push(neighbor);
+				}
+			});
+		}
+
+		// Outputting the traversal order in array format.
+		console.log(result);
+
+		// Returning the breadth first search
+		return result;
+	}
 };
 
 let graph = new Graph();
@@ -85,3 +173,5 @@ graph.addEdge('Hong Kong', 'Dallas');
 graph.addEdge('Los Angeles', 'New York');
 graph.addEdge('Los Angeles', 'Hong Kong');
 console.log(graph.adjacencyList);
+graph.depthFirstSearchIterative('Dallas');
+graph.breadthFirstSearch('Dallas');
