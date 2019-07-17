@@ -101,7 +101,7 @@ const BinarySearchTree = class {
 				node.value = tempNode.value;
 
 				// Recursive step that removes the temp node given the right subtree.
-				node.right = removeNode(node.right, tempNode.data);
+				node.right = removeNode(node.right, tempNode.value);
 
 				// Returns the new node assignment which updates the tree.
 				return node;
@@ -153,7 +153,7 @@ const BinarySearchTree = class {
 
 		console.log(data);
 
-		return this;
+		return data;
 	}
 
 	// Middle, Left, Right
@@ -170,7 +170,7 @@ const BinarySearchTree = class {
 
 		console.log(data);
 
-		return this;
+		return data;
 	}
 
 	// Left, Middle, Right
@@ -186,7 +186,7 @@ const BinarySearchTree = class {
 
 		console.log(data);
 
-		return this;
+		return data;
 	}
 
 	// Left, Right, Middle
@@ -202,8 +202,27 @@ const BinarySearchTree = class {
 
 		console.log(data);
 
-		return this;
+		return data;
 	}
+
+	// How can I find the height and depth of the tree if I don't have a reference to a given node? Obviously you should then just use the root reference in the constructor, but for some reason the parameter didn't work. Will come back to it.
+
+	// The problem with doing a height and depth calculation is that you have to pass a reference to the exact node for specific. I guess you could just find the height and depth of the tree instead.
+	// findHeight(node = this.root) {
+	// 	// if (node === null) return -1;
+
+	// 	// let leftHeight = findHeight(node.left);
+	// 	// let rightHeight = findHeight(node.right);
+
+	// 	// if (leftHeight > rightHeight) {
+	// 	// 	return leftHeight + 1;
+	// 	// } else {
+	// 	// 	return rightHeight + 1;
+	// 	// }
+
+	// 	if (node === null) return 0;
+	// 	return 1 + Math.max(findHeight(node.left), findHeight(node.right));
+	// }
 };
 
 //     5
@@ -224,4 +243,7 @@ bst.depthFirstSearchInOrder();
 bst.depthFirstSearchPostOrder();
 
 bst.remove(7);
+bst.breadthFirstSearch();
+
+console.log(bst.findHeight());
 bst.breadthFirstSearch();
