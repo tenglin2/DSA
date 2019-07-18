@@ -54,11 +54,19 @@ const SinglyLinkedList = class {
 			return poppedNode;
 		}
 
-		// Normal case we need to find the node before the last and set as the new tail.
+		// Normal case we need to find the node before the last and set as the new tail. Notice that we use a for loop that ends before this.length - 2. This is because this.length - 2 represent the second last element. We want a loop at the third, but don't want to go to the last element.
 		let newTail = this.head;
-		while (newTail.next) {
+		for (let i = 0; i < this.length - 2; i++) {
 			newTail = newTail.next;
 		}
+
+		// Alternative using two variables and a while loop.
+		// let currentNode = this.head;
+		// let newTail = currentNode;
+		// while (currentNode.next) {
+		//   newTail = currentNode.next;
+		//   currentNode = currentNode.next;
+		// }
 
 		// The poppedNode is the tail that we want removed.
 		let poppedNode = newTail.next;
@@ -244,7 +252,7 @@ console.log('hello');
 let list = new SinglyLinkedList();
 
 list.push(1);
-list.push(1);
+list.push(5);
 list.push(1);
 list.push(1);
 list.push(5);
@@ -257,4 +265,6 @@ list.shift();
 list.insert(12, 2);
 list.reverse();
 console.log(list.valueAt(3));
+list.pop();
 list.print();
+// console.log(list.length);
