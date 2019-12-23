@@ -282,5 +282,5 @@ bst.depthFirstSearchPostOrder();
 bst.remove(7);
 bst.breadthFirstSearch();
 
-console.log(bst.findHeight());
+console.log(bst.findMaxHeight());
 bst.breadthFirstSearch();

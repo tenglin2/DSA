@@ -117,3 +117,4 @@ console.log(hash.keyMap);
 hash.values();
 hash.keys();
 hash.print();
+console.log(hash.get('key1'));
